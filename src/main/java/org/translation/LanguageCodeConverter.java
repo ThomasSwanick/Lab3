@@ -41,10 +41,13 @@ public class LanguageCodeConverter {
             // tip: you might find it convenient to create an iterator using lines.iterator()
             for (String line : lines) {
                 String[] parts = line.split("\t");
-                String code = parts[0].trim();
-                String language = parts[1].trim();
-                codeToLanguageMap.put(code, language);
-                languageToCodeMap.put(language, code);
+                if (parts.length == 2) {
+                    String code = parts[0].trim();
+                    String language = parts[1].trim();
+                    codeToLanguageMap.put(code, language);
+                    languageToCodeMap.put(language, code);
+                }
+
             }
             // Checkstyle: '}' on next line should be alone on a line.
         }
