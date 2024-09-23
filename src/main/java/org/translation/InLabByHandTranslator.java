@@ -32,6 +32,7 @@ public class InLabByHandTranslator implements Translator {
         return new ArrayList<>();
     }
 
+    
     // TODO Checkstyle: Static variable definition in wrong order.
     @SuppressWarnings({"checkstyle:DeclarationOrder", "checkstyle:SuppressWarnings"})
     public static final String CANADA = "can";

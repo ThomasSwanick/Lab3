@@ -5,10 +5,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+
 /**
  * This class provides the service of converting country codes to their names.
  */
-
 public class CountryCodeConverter {
 
     // TODO Task: pick appropriate instance variable(s) to store the data necessary for this class
@@ -17,7 +17,6 @@ public class CountryCodeConverter {
      * Default constructor which will load the country codes from "country-codes.txt"
      * in the resources folder.
      */
-
     public CountryCodeConverter() {
         this("country-codes.txt");
     }
