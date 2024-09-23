@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class provides the service of converting language codes to their names.
@@ -28,6 +26,7 @@ public class LanguageCodeConverter {
      * @param filename the name of the file in the resources folder to load the data from
      * @throws RuntimeException if the resource file can't be loaded properly
      */
+    @SuppressWarnings({"checkstyle:CommentsIndentation", "checkstyle:SuppressWarnings"})
     public LanguageCodeConverter(String filename) {
 
         try {
@@ -38,7 +37,8 @@ public class LanguageCodeConverter {
             //           tip: you might find it convenient to create an iterator using lines.iterator()
 
         // TODO Checkstyle: '}' on next line should be alone on a line.
-        } catch (IOException | URISyntaxException ex) {
+        }
+        catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
 
