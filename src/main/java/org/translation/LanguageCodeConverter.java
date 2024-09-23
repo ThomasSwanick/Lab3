@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides the service of converting language codes to their names.
@@ -12,11 +14,13 @@ import java.util.List;
 public class LanguageCodeConverter {
 
     // TODO Task: pick appropriate instance variables to store the data necessary for this class
-
+    private Map<String, String> codeToLanguageMap;
+    private Map<String, String> languageToCodeMap;
     /**
      * Default constructor which will load the language codes from "language-codes.txt"
-     * in the resources folder.
+     * in the resources folder. TESTING11111
      */
+
     public LanguageCodeConverter() {
         this("language-codes.txt");
     }
@@ -26,17 +30,23 @@ public class LanguageCodeConverter {
      * @param filename the name of the file in the resources folder to load the data from
      * @throws RuntimeException if the resource file can't be loaded properly
      */
-    @SuppressWarnings({"checkstyle:CommentsIndentation", "checkstyle:SuppressWarnings"})
     public LanguageCodeConverter(String filename) {
-
+        codeToLanguageMap = new HashMap<>();
+        languageToCodeMap = new HashMap<>();
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));
 
-            // TODO Task: use lines to populate the instance variable
-            //           tip: you might find it convenient to create an iterator using lines.iterator()
-
-        // TODO Checkstyle: '}' on next line should be alone on a line.
+            // Task: use lines to populate the instance variable
+            // tip: you might find it convenient to create an iterator using lines.iterator()
+            for (String line : lines) {
+                String[] parts = line.split("\t");
+                String code = parts[0].trim();
+                String language = parts[1].trim();
+                codeToLanguageMap.put(code, language);
+                languageToCodeMap.put(language, code);
+            }
+            // Checkstyle: '}' on next line should be alone on a line.
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
@@ -50,8 +60,8 @@ public class LanguageCodeConverter {
      * @return the name of the language corresponding to the code
      */
     public String fromLanguageCode(String code) {
-        // TODO Task: update this code to use your instance variable to return the correct value
-        return code;
+        // Task: update this code to use your instance variable to return the correct value
+        return languageToCodeMap.get(code);
     }
 
     /**
@@ -60,8 +70,8 @@ public class LanguageCodeConverter {
      * @return the 2-letter code of the language
      */
     public String fromLanguage(String language) {
-        // TODO Task: update this code to use your instance variable to return the correct value
-        return language;
+        // Task: update this code to use your instance variable to return the correct value
+        return codeToLanguageMap.get(language);
     }
 
     /**
@@ -69,7 +79,7 @@ public class LanguageCodeConverter {
      * @return how many languages are included in this code converter.
      */
     public int getNumLanguages() {
-        // TODO Task: update this code to use your instance variable to return the correct value
-        return 0;
+        // Task: update this code to use your instance variable to return the correct value
+        return languageToCodeMap.size();
     }
 }
