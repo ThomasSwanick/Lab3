@@ -40,13 +40,17 @@ public class JSONTranslator implements Translator {
         try {
 
             String jsonString = Files.readString(Paths.get(getClass().getClassLoader().getResource(filename).toURI()));
-            store = new JSONArray(jsonString);
-
             // TODO Task: use the data in the jsonArray to populate your instance variables
             //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
             store = new JSONArray(jsonString);
+            // store as an array, where we could use it to access the value through
+            // getJSONObject -- a function that is already been defined
             map = new HashMap<>();
+            // the key will be determined by alpha3, as the later function is using 3-letter code to
+            // access
             country_code = new ArrayList<>();
+            // this is for other function, getCountries() below, which is easier to access
+            // if we store as an instance variable
             for(int i = 0; i < store.length(); i++) {
                 String key = store.getJSONObject(i).getString("alpha3");
                 map.put(key,store.getJSONObject(i));
@@ -68,11 +72,14 @@ public class JSONTranslator implements Translator {
             return null;
         }
         Set<String> obj_l = map.get(country).keySet();
-        List<String> the_result = new ArrayList<>(obj_l);
-        the_result.remove("id");
-        the_result.remove("alpha2");
-        the_result.remove("alpha3");
-        return the_result;
+        // keyset is similar to dictionary get keys
+        obj_l.remove("id");
+        obj_l.remove("alpha2");
+        obj_l.remove("alpha3");
+        List<String> return_list = new ArrayList<>(obj_l);
+        // cast to match the return type
+        // remove the unrelated key (check the json document)
+        return return_list;
 
     }
 
@@ -85,6 +92,7 @@ public class JSONTranslator implements Translator {
 
     @Override
     public String translate(String country, String language) {
+        // directly go through the key with provided function
         if (!map.containsKey(country)){
             return "Country not found";
         }
