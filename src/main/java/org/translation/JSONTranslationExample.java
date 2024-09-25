@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+
 /**
  * A minimal example of reading and using the JSON data from resources/sample.json.
  */
@@ -26,6 +27,8 @@ public class JSONTranslationExample {
             String jsonString = Files.readString(
                     Paths.get(getClass().getClassLoader().getResource("sample.json").toURI()));
             this.jsonArray = new JSONArray(jsonString);
+            jsonArray.getJSONObject(CANADA_INDEX).keySet().remove("alpha2");
+
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
@@ -39,8 +42,7 @@ public class JSONTranslationExample {
     public String getCanadaCountryNameSpanishTranslation() {
 
         // TODO Checkstyle: '30' is a magic number.
-        final int thirty = 30;
-        JSONObject canada = jsonArray.getJSONObject(thirty);
+        JSONObject canada = jsonArray.getJSONObject(CANADA_INDEX);
         return canada.getString("es");
     }
 
@@ -54,6 +56,13 @@ public class JSONTranslationExample {
      * @return the translation of country to the given language or "Country not found" if there is no translation.
      */
     public String getCountryNameTranslation(String countryCode, String languageCode) {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject countryObj = jsonArray.getJSONObject(i);
+            if (countryObj.getString("alpha3").equals(countryCode)) {
+                // Return the translation for the specified languageCode
+                return countryObj.getString(languageCode);
+            }
+        }
         return "Country not found";
     }
 
@@ -63,7 +72,6 @@ public class JSONTranslationExample {
      */
     public static void main(String[] args) {
         JSONTranslationExample jsonTranslationExample = new JSONTranslationExample();
-
         System.out.println(jsonTranslationExample.getCanadaCountryNameSpanishTranslation());
         String translation = jsonTranslationExample.getCountryNameTranslation("can", "es");
         System.out.println(translation);

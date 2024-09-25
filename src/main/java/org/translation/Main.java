@@ -26,7 +26,7 @@ public class Main {
         // TODO Task: once you finish the JSONTranslator,
         //            you can use it here instead of the InLabByHandTranslator
         //            to try out the whole program!
-        Translator translator = new JSONTranslator(null);
+        Translator translator = new JSONTranslator();
         // Translator translator = new InLabByHandTranslator();
 
         runProgram(translator);
@@ -39,6 +39,7 @@ public class Main {
      * @param translator the Translator implementation to use in the program
      */
     public static void runProgram(Translator translator) {
+
         while (true) {
             String country = promptForCountry(translator);
             String quit = "quit";
@@ -50,24 +51,30 @@ public class Main {
             //            convert it back to its 3-letter country code when calling promptForLanguage
             CountryCodeConverter converter = new CountryCodeConverter();
             String countryCode = converter.fromCountry(country);
-            String language = promptForLanguage(translator, countryCode);
-            if (quit.equals(language)) {
-                break;
+            if (countryCode.isBlank()) {
+                System.out.println();
+                System.out.println("Please enter a valid country code.");;
             }
-            // TODO Task: Once you switch promptForLanguage so that it returns the language
-            //            name rather than the 2-letter language code, you will need to
-            //            convert it back to its 2-letter language code when calling translate.
-            //            Note: you should use the actual names in the message printed below though,
-            //            since the user will see the displayed message.
-            LanguageCodeConverter languageConverter = new LanguageCodeConverter();
-            String languageCode = languageConverter.fromLanguage(language);
-            System.out.println(country + " in " + language + " is " + translator.translate(country, languageCode));
-            System.out.println("Press enter to continue or quit to exit.");
-            Scanner s = new Scanner(System.in);
-            String textTyped = s.nextLine();
+            else {
+                String language = promptForLanguage(translator, countryCode);
+                if (quit.equals(language)) {
+                    break;
+                }
+                // TODO Task: Once you switch promptForLanguage so that it returns the language
+                //            name rather than the 2-letter language code, you will need to
+                //            convert it back to its 2-letter language code when calling translate.
+                //            Note: you should use the actual names in the message printed below though,
+                //            since the user will see the displayed message.
+                LanguageCodeConverter languageConverter = new LanguageCodeConverter();
+                String languageCode = languageConverter.fromLanguage(language);
+                System.out.println(country + " in " + language + " is " + translator.translate(countryCode, languageCode));
+                System.out.println("Press enter to continue or quit to exit.");
+                Scanner s = new Scanner(System.in);
+                String textTyped = s.nextLine();
 
-            if (quit.equals(textTyped)) {
-                break;
+                if (quit.equals(textTyped)) {
+                    break;
+                }
             }
         }
     }
@@ -89,10 +96,18 @@ public class Main {
             System.out.println(country);
         }
 
-        System.out.println("select a country from above:");
-
+        System.out.println("select a country from above or press quit to exit:");
         Scanner s = new Scanner(System.in);
-        return s.nextLine();
+        String country = s.nextLine();
+        while(country.isEmpty()||!names.contains(country)) {
+            if (country.equals("quit")){
+                break;
+            }
+            System.out.println("select a country from above or press quit to exit:");
+            s = new Scanner(System.in);
+            country = s.nextLine();
+        }
+        return country;
 
     }
 
@@ -102,7 +117,7 @@ public class Main {
         // TODO Task: replace the line below so that we sort the languages alphabetically and print them out;
         //  one per line
         // TODO Task: convert the language codes to the actual language names before sorting
-        List<String> languages = translator.getCountryLanguages(country);
+        List<String>languages = translator.getCountryLanguages(country);
         LanguageCodeConverter convert = new LanguageCodeConverter();
         List<String> languageNames = new ArrayList<>();
         for (String language : languages) {
@@ -113,8 +128,13 @@ public class Main {
         }
 
         System.out.println("select a language from above:");
-
         Scanner s = new Scanner(System.in);
-        return s.nextLine();
+        String word = s.nextLine();
+        while (!languageNames.contains(word)) {
+            System.out.println("select a language from above appropriately:");
+            s = new Scanner(System.in);
+            word = s.nextLine();
+        }
+        return word;
     }
 }

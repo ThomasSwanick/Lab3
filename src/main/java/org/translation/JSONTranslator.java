@@ -17,13 +17,15 @@ public class JSONTranslator implements Translator {
 
     // TODO Task: pick appropriate instance variables for this class
     private JSONArray store;
-    private Map<String,JSONObject> map;
+    private Map<String,JSONObject> map_three_code;
+    private Map<String,JSONObject> map_two_code;
     private List<String> country_code;
 
     /**
      * Constructs a JSONTranslator using data from the sample.json resources file.
      */
     public JSONTranslator() {
+
         this("sample.json");
     }
 
@@ -34,6 +36,9 @@ public class JSONTranslator implements Translator {
      */
     public JSONTranslator(String filename) {
         // read the file to get the data to populate things...
+        if (filename == null) {
+            throw new IllegalArgumentException("filename cannot be null");
+        }
         try {
 
             String jsonString = Files.readString(Paths.get(getClass().getClassLoader().getResource(filename).toURI()));
@@ -42,7 +47,8 @@ public class JSONTranslator implements Translator {
             store = new JSONArray(jsonString);
             // store as an array, where we could use it to access the value through
             // getJSONObject -- a function that is already been defined
-            map = new HashMap<>();
+            map_three_code = new HashMap<>();
+            map_two_code = new HashMap<>();
             // the key will be determined by alpha3, as the later function is using 3-letter code to
             // access
             country_code = new ArrayList<>();
@@ -50,7 +56,9 @@ public class JSONTranslator implements Translator {
             // if we store as an instance variable
             for(int i = 0; i < store.length(); i++) {
                 String key = store.getJSONObject(i).getString("alpha3");
-                map.put(key,store.getJSONObject(i));
+                String key_two_code = store.getJSONObject(i).getString("alpha2");
+                map_three_code.put(key.toUpperCase(),store.getJSONObject(i));
+                map_two_code.put(key_two_code.toUpperCase(),store.getJSONObject(i));
                 country_code.add(key);
 
             }
@@ -65,10 +73,19 @@ public class JSONTranslator implements Translator {
     public List<String> getCountryLanguages(String country) {
         // TODO Task: return an appropriate list of language codes,
         //            but make sure there is no aliasing to a mutable object
-        if(!map.containsKey(country)) {
+        Map<String, JSONObject> set;
+        country = country.toUpperCase();
+        if (!map_three_code.containsKey(country) && !map_two_code.containsKey(country)) {
+            System.out.println("Not found");
             return null;
         }
-        Set<String> obj_l = map.get(country).keySet();
+        else if (map_two_code.containsKey(country)) {
+            set = map_two_code;
+        }
+        else {
+            set = map_three_code;
+        }
+        Set<String> obj_l = set.get(country).keySet();
         // keyset is similar to dictionary get keys
         obj_l.remove("id");
         obj_l.remove("alpha2");
@@ -90,9 +107,18 @@ public class JSONTranslator implements Translator {
     @Override
     public String translate(String country, String language) {
         // directly go through the key with provided function
-        if (!map.containsKey(country)){
+        Map<String, JSONObject> set;
+        if (!map_three_code.containsKey(country.toUpperCase()) && !map_two_code.containsKey(country.toUpperCase())) {
+            System.out.println(country);
+            System.out.println(language);
             return "Country not found";
         }
-        return map.get(country).getString(language);
+        else if (map_three_code.containsKey(country.toUpperCase())){
+            set  = map_three_code;
+        }
+        else{
+            set = map_two_code;
+        }
+        return set.get(country.toUpperCase()).getString(language);
     }
 }

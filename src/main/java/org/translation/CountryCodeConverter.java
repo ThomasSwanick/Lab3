@@ -68,6 +68,7 @@ public class CountryCodeConverter {
      */
     public String fromCountry(String country) {
         // TODO Task: update this code to use an instance variable to return the correct value
+        if (!map_three.containsKey(country) && !map_country_name.containsKey(country)){return "";}
         return map_country_name.get(country)[1];
     }
 
